@@ -13,3 +13,4 @@ public class TaskController implements TasksApi {
 		return ResponseEntity.ok().build();
 	}
 }
+
