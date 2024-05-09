@@ -5,6 +5,11 @@
  */
 package com.example.todoapi.controller;
 
+import com.example.todoapi.model.BadRequestError;
+import com.example.todoapi.model.ResourceNotFoundError;
+import com.example.todoapi.model.TaskDTO;
+import com.example.todoapi.model.TaskForm;
+import com.example.todoapi.model.TaskListDTO;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,12 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import jakarta.util.List;
-import jakarta.util.Map;
-import jakarta.util.Optional;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-05-02T15:10:49.872323900+09:00[Asia/Tokyo]", comments = "Generator version: 7.5.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-05-09T15:40:15.372804300+09:00[Asia/Tokyo]", comments = "Generator version: 7.5.0")
 @Validated
 @Tag(name = "tasks", description = "タスク関連のAPI")
 public interface TasksApi {
@@ -41,25 +46,258 @@ public interface TasksApi {
     }
 
     /**
-     * GET /tasks/1
+     * POST /tasks/ : タスク作成
+     * タスクを新規作成します
      *
-     * @return OK (status code 200)
+     * @param taskForm  (required)
+     * @return Created (status code 201)
+     *         or Bad Request (status code 400)
      */
     @Operation(
-        operationId = "showTask",
+        operationId = "createTask",
+        summary = "タスク作成",
+        description = "タスクを新規作成します",
         tags = { "tasks" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "OK")
+            @ApiResponse(responseCode = "201", description = "Created", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestError.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.POST,
+        value = "/tasks/",
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    
+    default ResponseEntity<TaskDTO> createTask(
+        @Parameter(name = "TaskForm", description = "", required = true) @Valid @RequestBody TaskForm taskForm
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"id\" : 5, \"title\" : \"title\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"invalid-params\" : [ { \"reason\" : \"reason\", \"name\" : \"name\" }, { \"reason\" : \"reason\", \"name\" : \"name\" } ], \"detail\" : \"リクエストが不正です。正しいリクエストでリトライしてください\", \"title\" : \"Bad Request\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * DELETE /tasks/{taskId} : タスク削除
+     * 指定されたタスクを削除します
+     *
+     * @param taskId 更新するタスクのID (required)
+     * @return No Content (status code 204)
+     *         or Not Found (status code 404)
+     */
+    @Operation(
+        operationId = "deleteTask",
+        summary = "タスク削除",
+        description = "指定されたタスクを削除します",
+        tags = { "tasks" },
+        responses = {
+            @ApiResponse(responseCode = "204", description = "No Content"),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ResourceNotFoundError.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.DELETE,
+        value = "/tasks/{taskId}",
+        produces = { "application/json" }
+    )
+    
+    default ResponseEntity<Void> deleteTask(
+        @Min(1L) @Parameter(name = "taskId", description = "更新するタスクのID", required = true, in = ParameterIn.PATH) @PathVariable("taskId") Long taskId
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"detail\" : \"detail\", \"title\" : \"Resource Not Found\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * PUT /tasks/{taskId} : タスク更新
+     * 指定されたタスクをリクエストボディの内容で上書きします
+     *
+     * @param taskId 更新するタスクのID (required)
+     * @param taskForm  (required)
+     * @return OK (status code 200)
+     *         or Bad Request (status code 400)
+     *         or Not Found (status code 404)
+     */
+    @Operation(
+        operationId = "editTask",
+        summary = "タスク更新",
+        description = "指定されたタスクをリクエストボディの内容で上書きします",
+        tags = { "tasks" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "OK", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestError.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ResourceNotFoundError.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PUT,
+        value = "/tasks/{taskId}",
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    
+    default ResponseEntity<TaskDTO> editTask(
+        @Min(1L) @Parameter(name = "taskId", description = "更新するタスクのID", required = true, in = ParameterIn.PATH) @PathVariable("taskId") Long taskId,
+        @Parameter(name = "TaskForm", description = "", required = true) @Valid @RequestBody TaskForm taskForm
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"id\" : 5, \"title\" : \"title\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"invalid-params\" : [ { \"reason\" : \"reason\", \"name\" : \"name\" }, { \"reason\" : \"reason\", \"name\" : \"name\" } ], \"detail\" : \"リクエストが不正です。正しいリクエストでリトライしてください\", \"title\" : \"Bad Request\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"detail\" : \"detail\", \"title\" : \"Resource Not Found\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /tasks/ : タスク一覧取得
+     * タスクの一覧を取得できます
+     *
+     * @param limit リストに含まれるリソースの最大値 (required)
+     * @param offset オフセット (required)
+     * @return OK (status code 200)
+     *         or Bad Request (status code 400)
+     */
+    @Operation(
+        operationId = "listTasks",
+        summary = "タスク一覧取得",
+        description = "タスクの一覧を取得できます",
+        tags = { "tasks" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "OK", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = TaskListDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestError.class))
+            })
         }
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = "/tasks/1"
+        value = "/tasks/",
+        produces = { "application/json" }
     )
     
-    default ResponseEntity<Void> showTask(
-        
+    default ResponseEntity<TaskListDTO> listTasks(
+        @NotNull @Min(1) @Max(100) @Parameter(name = "limit", description = "リストに含まれるリソースの最大値", required = true, in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = true, defaultValue = "10") Integer limit,
+        @NotNull @Min(0L) @Parameter(name = "offset", description = "オフセット", required = true, in = ParameterIn.QUERY) @Valid @RequestParam(value = "offset", required = true, defaultValue = "0") Long offset
     ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"page\" : { \"offset\" : 6, \"size\" : 1, \"limit\" : 0 }, \"results\" : [ { \"id\" : 5, \"title\" : \"title\" }, { \"id\" : 5, \"title\" : \"title\" } ] }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"invalid-params\" : [ { \"reason\" : \"reason\", \"name\" : \"name\" }, { \"reason\" : \"reason\", \"name\" : \"name\" } ], \"detail\" : \"リクエストが不正です。正しいリクエストでリトライしてください\", \"title\" : \"Bad Request\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /tasks/{taskId} : タスク取得
+     * 指定されたタスクを１件取得します
+     *
+     * @param taskId 詳細を取得するタスクのID (required)
+     * @return OK (status code 200)
+     *         or Not Found (status code 400)
+     */
+    @Operation(
+        operationId = "showTask",
+        summary = "タスク取得",
+        description = "指定されたタスクを１件取得します",
+        tags = { "tasks" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "OK", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Not Found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ResourceNotFoundError.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/tasks/{taskId}",
+        produces = { "application/json" }
+    )
+    
+    default ResponseEntity<TaskDTO> showTask(
+        @Parameter(name = "taskId", description = "詳細を取得するタスクのID", required = true, in = ParameterIn.PATH) @PathVariable("taskId") Long taskId
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"id\" : 5, \"title\" : \"title\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"detail\" : \"detail\", \"title\" : \"Resource Not Found\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

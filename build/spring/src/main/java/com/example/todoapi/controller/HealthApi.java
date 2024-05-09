@@ -26,12 +26,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import jakarta.util.List;
-import jakarta.util.Map;
-import jakarta.util.Optional;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-05-02T15:10:49.872323900+09:00[Asia/Tokyo]", comments = "Generator version: 7.5.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-05-09T15:40:15.372804300+09:00[Asia/Tokyo]", comments = "Generator version: 7.5.0")
 @Validated
 @Tag(name = "opts", description = "運用監視関連のAPI")
 public interface HealthApi {

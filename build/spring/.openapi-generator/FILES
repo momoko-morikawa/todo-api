@@ -1,6 +1,12 @@
-.openapi-generator-ignore
 README.md
 pom.xml
 src/main/java/com/example/todoapi/controller/ApiUtil.java
 src/main/java/com/example/todoapi/controller/HealthApi.java
 src/main/java/com/example/todoapi/controller/TasksApi.java
+src/main/java/com/example/todoapi/model/BadRequestError.java
+src/main/java/com/example/todoapi/model/InvalidParam.java
+src/main/java/com/example/todoapi/model/PageDTO.java
+src/main/java/com/example/todoapi/model/ResourceNotFoundError.java
+src/main/java/com/example/todoapi/model/TaskDTO.java
+src/main/java/com/example/todoapi/model/TaskForm.java
+src/main/java/com/example/todoapi/model/TaskListDTO.java
